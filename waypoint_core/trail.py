@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-from waypoint_core.distance import Distance
+from distance import Distance
+
 
 class Trail(ABC):
     default_unit = "km"
@@ -15,7 +16,7 @@ class Trail(ABC):
     def set_difficulty(self, difficulty):
         allowed = {"easy", "moderate", "hard", "expert"}
         if difficulty not in allowed:
-            raise ValueError(f"Difficulty must be one of {allowed}")
+            raise ValueError(f"difficulty must be one of {allowed}")
         self._difficulty = difficulty
 
     @property
@@ -25,13 +26,7 @@ class Trail(ABC):
     @classmethod
     def from_dict(cls, data):
         dist = Distance(data["distance_value"], data.get("unit", cls.default_unit))
-        return cls(
-            data["id"],
-            data["name"],
-            dist,
-            data["elevation_gain_m"],
-            data["difficulty"]
-        )
+        return cls(data["id"], data["name"], dist, data["elevation_gain_m"], data["difficulty"])
 
     @staticmethod
     def is_valid_difficulty(difficulty):
@@ -43,51 +38,84 @@ class Trail(ABC):
         return self.trail_id == other.trail_id
 
     @abstractmethod
-    def estimated_time_hours(self):
+    def estimated_time(self):
+        pass
+
+    @abstractmethod
+    def summary(self):
         pass
 
 
 class DayHike(Trail):
-    def estimated_time_hours(self):
-        base = self.distance.magnitude / 3.0
-        climb = self.elevation_gain_m / 600.0
-        return base + climb
+    def __init__(self, trail_id, name, distance, elevation_gain_m, difficulty, pace_kmh=4):
+        super().__init__(trail_id, name, distance, elevation_gain_m, difficulty)
+        self.pace_kmh = pace_kmh
+
+    def estimated_time(self):
+        return self.distance.magnitude / self.pace_kmh
+
+    def summary(self):
+        return f"{self.name}: day hike, {self.distance}, ~{self.estimated_time():.1f}h"
 
 
 class BackpackingRoute(Trail):
-    def estimated_time_hours(self):
-        base = self.distance.magnitude / 2.0
-        climb = self.elevation_gain_m / 400.0
-        return base + climb
+    def __init__(self, trail_id, name, distance, elevation_gain_m, difficulty, days=2):
+        super().__init__(trail_id, name, distance, elevation_gain_m, difficulty)
+        self.days = days
+
+    def estimated_time(self):
+        return self.days * 8
+
+    def summary(self):
+        return f"{self.name}: backpacking route, {self.days} days"
 
 
 class TrailRun(Trail):
-    def estimated_time_hours(self):
-        base = self.distance.magnitude / 8.0
-        climb = self.elevation_gain_m / 1000.0
-        return base + climb
+    def __init__(self, trail_id, name, distance, elevation_gain_m, difficulty, pace_kmh=10):
+        super().__init__(trail_id, name, distance, elevation_gain_m, difficulty)
+        self.pace_kmh = pace_kmh
+
+    def estimated_time(self):
+        return self.distance.magnitude / self.pace_kmh
+
+    def summary(self):
+        return f"{self.name}: trail run, ~{self.estimated_time():.1f}h"
 
 
 class GuidedDayHike(DayHike):
-    def estimated_time_hours(self):
-        return super().estimated_time_hours() + 1.0
+    def __init__(self, trail_id, name, distance, elevation_gain_m, difficulty, guide_name, pace_kmh=3.5):
+        super().__init__(trail_id, name, distance, elevation_gain_m, difficulty, pace_kmh)
+        self.guide_name = guide_name
+
+    def summary(self):
+        base = super().summary()
+        return f"{base} (guided by {self.guide_name})"
+
+
+class ElevationMixin:
+    def grade_percent(self):
+        return (self.elevation_gain_m / (self.distance.magnitude * 1000)) * 100
 
 
 class RatingMixin:
-    def set_rating(self, rating):
-        if rating not in {1, 2, 3, 4, 5}:
-            raise ValueError("Rating must be 1–5")
-        self._rating = rating
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.ratings = []
 
-    @property
-    def rating(self):
-        return getattr(self, "_rating", None)
+    def add_rating(self, stars):
+        self.ratings.append(stars)
+
+    def average_rating(self):
+        return sum(self.ratings) / len(self.ratings) if self.ratings else 0
 
 
-class RatedDayHike(RatingMixin, DayHike):
+class RatedDayHike(ElevationMixin, RatingMixin, DayHike):
     pass
 
 
 class FakeTrail:
-    def __init__(self, trail_id):
-        self.trail_id = trail_id
+    def __init__(self, name):
+        self.name = name
+
+    def estimated_time(self):
+        return 1.0
