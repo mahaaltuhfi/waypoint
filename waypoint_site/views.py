@@ -21,7 +21,7 @@ def contact(request):
 def get_all_trails():
     return [
         DayHike(1, "Ridge Walk", Distance(8, "km"), 200, "moderate"),
-        BackpackingRoute(2, "Coastal Trek", Distance(40, "km"), 900, "hard", days=3),
+        BackpackingRoute(2, "Coastal Trek", Distance(40, "km"), 900, "hard"),
         TrailRun(3, "Sprint Loop", Distance(5, "km"), 50, "easy"),
     ]
 
