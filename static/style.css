@@ -1,7 +1,112 @@
-body { font-family: Arial, Helvetica, sans-serif; max-width: 700px; margin: 40px auto; padding: 0 20px; background-color: #f4f6f5; color: #222; }
-h1 { color: #2f5d3a; }
-form { background: #fff; padding: 20px; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
-label { display: block; margin-top: 12px; font-weight: bold; }
-input, textarea { width: 100%; padding: 6px; margin-top: 4px; box-sizing: border-box; }
-button { margin-top: 16px; padding: 8px 16px; background-color: #2f5d3a; color: white; border: none; border-radius: 4px; cursor: pointer; }
-button:hover { background-color: #244c2e; }
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px 40px;
+    background-color: #f4f6f5;
+    color: #222;
+}
+
+h1 {
+    color: #2f5d3a;
+}
+
+.navbar {
+    display: flex;
+    gap: 20px;
+    padding: 16px 0;
+    border-bottom: 2px solid #2f5d3a;
+    margin-bottom: 24px;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: #2f5d3a;
+    font-weight: bold;
+}
+
+.navbar a:hover {
+    text-decoration: underline;
+}
+
+.footer {
+    margin-top: 40px;
+    padding-top: 16px;
+    border-top: 1px solid #ccc;
+    color: #666;
+    font-size: 0.9em;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+th {
+    background-color: #2f5d3a;
+    color: white;
+}
+
+.badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background-color: #dfe9e2;
+    color: #2f5d3a;
+    font-size: 0.85em;
+    text-transform: capitalize;
+}
+
+.badge-closed {
+    background-color: #f2c4c4;
+    color: #8a1f1f;
+    text-transform: uppercase;
+}
+
+.badge-hard {
+    background-color: #f7d9a0;
+    color: #8a5a00;
+    text-transform: uppercase;
+}
+
+form {
+    background: #fff;
+    padding: 20px;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    display: block;
+    margin-top: 12px;
+    font-weight: bold;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 6px;
+    margin-top: 4px;
+    box-sizing: border-box;
+}
+
+button {
+    margin-top: 16px;
+    padding: 8px 16px;
+    background-color: #2f5d3a;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #244c2e;
+}
